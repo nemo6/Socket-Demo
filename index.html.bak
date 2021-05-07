@@ -1,0 +1,50 @@
+<input id="search" autocomplete="off"></input><button id="click">envoyer</button>
+
+<span id="hide" style="display:none;"> ... en train d'écrire</span>
+
+<br>
+<br>
+
+<span id="texte"></span>
+
+<script src="/socket.io/socket.io.js"></script> <!-- http://localhost:8080/socket.io/socket.io.js -->
+
+<script>
+
+	// connection au serveur Node.js avec socket.io
+
+	var socket = io(window.location); // http://localhost:8080
+
+	content = ""
+
+	document.querySelector("#search").oninput = function(){
+	  
+		content = this.value
+	  
+		document.querySelector("#hide").style.display = ""
+	  
+	}
+
+	document.querySelector("#search").onchange = function(){
+	  
+		document.querySelector("#hide").style.display = "none"
+	  
+	}
+
+	document.querySelector("#click").onclick = function(){
+	  
+		// document.querySelector("#texte").innerHTML += content + "<br>"
+		
+		socket.emit('envoyer', content)
+	  
+	}
+	
+	// le chat en temps réel commence ici :
+	
+	socket.on("recuperer", (data) => {
+		
+		document.querySelector("#texte").innerHTML += data + "<br>"
+		
+	})
+
+</script>
